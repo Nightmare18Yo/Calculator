@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .calculator {
+      background-color: #333;
+      border-radius: 10px;
+      width: 300px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .result {
+      font-size: 24px;
+      color: white;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+    }
+
+    .button {
+      background-color: #555;
+      color: white;
+      border: none;
+      font-size: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+  <title>Calculator</title>
+</head>
+<body>
+  <div class="calculator">
+    <div class="result" id="result">0</div>
+    <div class="buttons">
+      <button class="button" onclick="clearResult()">C</button>
+      <button class="button" onclick="appendToResult('7')">7</button>
+      <button class="button" onclick="appendToResult('8')">8</button>
+      <button class="button" onclick="appendToResult('9')">9</button>
+      <button class="button" onclick="appendToResult('4')">4</button>
+      <button class="button" onclick="appendToResult('5')">5</button>
+      <button class="button" onclick="appendToResult('6')">6</button>
+      <button class="button" onclick="appendToResult('1')">1</button>
+      <button class="button" onclick="appendToResult('2')">2</button>
+      <button class="button" onclick="appendToResult('3')">3</button>
+      <button class="button" onclick="appendToResult('0')">0</button>
+      <button class="button" onclick="appendToResult('.')">.</button>
+      <button class="button" onclick="performOperation('+')">+</button>
+      <button class="button" onclick="performOperation('-')">-</button>
+      <button class="button" onclick="performOperation('*')">*</button>
+      <button class="button" onclick="performOperation('/')">/</button>
+      <button class="button" onclick="calculateResult()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = '';
+    let currentOperation = null;
+    let previousInput = '';
+    let resultDisplayed = false;
+
+    const resultDisplay = document.getElementById('result');
+
+    function appendToResult(value) {
+      if (resultDisplayed) {
+        currentInput = '';
+        resultDisplayed = false;
+      }
+      currentInput += value;
+      resultDisplay.textContent = currentInput;
+    }
+
+    function performOperation(operation) {
+      if (currentInput !== '') {
+        if (previousInput !== '') {
+          calculateResult();
+        }
+        currentOperation = operation;
+        previousInput = currentInput;
+        currentInput = '';
+      }
+    }
+
+    function calculateResult() {
+      if (previousInput !== '' && currentInput !== '' && currentOperation) {
+        const prev = parseFloat(previousInput);
+        const current = parseFloat(currentInput);
+
+        if (isNaN(prev) || isNaN(current)) {
+          resultDisplay.textContent = 'Error';
+          return;
+        }
+
+        let result;
+        switch (currentOperation) {
+          case '+':
+            result = prev + current;
+            break;
+          case '-':
+            result = prev - current;
+            break;
+          case '*':
+            result = prev * current;
+            break;
+          case '/':
+            if (current === 0) {
+              resultDisplay.textContent = 'Error';
+              return;
+            }
+            result = prev / current;
+            break;
+          default:
+            result = 'Error';
+            break;
+        }
+
+        resultDisplay.textContent = result;
+        previousInput = result.toString();
+        currentOperation = null;
+        currentInput = '';
+        resultDisplayed = true;
+      }
+    }
+
+    function clearResult() {
+      currentInput = '';
+      previousInput = '';
+      currentOperation = null;
+      resultDisplay.textContent = '0';
+      resultDisplayed = false;
+    }
+  </script>
+</body>
+</html>
